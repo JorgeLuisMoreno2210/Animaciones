@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,14 +11,15 @@
   <div class="game-container">
     <div class="score-board">
       <div class="score-label">🏆 Score:</div>
-      <div class="score-display"></div>
+  
+      <div class="score-display" id="score">0</div>
+      <button class="reset-btn" onclick="BunnyGame.reset()" title="Reiniciar">🔄</button>
     </div>
     
     <div class="phone">
       <h1 class="tittle">Bunny Rush 🐰</h1>
-      
-      <!-- Capa 1 - Conejo Blanco Móvil -->
-      <div class="layer-1">
+   
+      <div class="layer-1 bunny bunny-animated">
         <input type="checkbox" />
         <div class="left-ear-outer"></div>
         <div class="left-ear-inner"></div>
@@ -32,8 +33,8 @@
         </div>
       </div>
 
-      <!-- Capa 2 - Conejo Gris Móvil -->
-      <div class="layer-2">
+  
+      <div class="layer-2 bunny bunny-animated">
         <input type="checkbox" />
         <div class="left-ear-outer2"></div>
         <div class="left-ear-inner2"></div>
@@ -47,14 +48,13 @@
         </div>
       </div>
 
-      <!-- Capa 3 - Fondo -->
       <div class="layer-3">
         <div class="lawn"></div>
         <div class="land"></div>
       </div>
 
-      <!-- Capa 4 - Conejo Marrón Móvil -->
-      <div class="layer-4">
+  
+      <div class="layer-4 bunny bunny-animated">
         <input type="checkbox" />
         <div class="left-ear-outer4"></div>
         <div class="left-ear-inner4"></div>
@@ -68,14 +68,12 @@
         </div>
       </div>
 
-      <!-- Capa 5 - Fondo -->
       <div class="layer-5">
         <div class="lawn"></div>
         <div class="land"></div>
       </div>
 
-      <!-- Capa 6 - Conejo Blanco Semi-móvil -->
-      <div class="layer-6">
+      <div class="layer-6 bunny bunny-animated">
         <input type="checkbox" />
         <div class="left-ear-outer6"></div>
         <div class="left-ear-inner6"></div>
@@ -89,13 +87,11 @@
         </div>
       </div>
 
-      <!-- Capa 7 - Fondo -->
       <div class="layer-7">
         <div class="lawn"></div>
         <div class="land"></div>
       </div>
 
-      <!-- Capas de arbustos -->
       <div class="layer-8">
         <div class="bush1"></div>
         <div class="bush2"></div>
@@ -114,5 +110,7 @@
       </div>
     </div>
   </div>
+
+  <script src="bunnies.js"></script>
 </body>
 </html>
