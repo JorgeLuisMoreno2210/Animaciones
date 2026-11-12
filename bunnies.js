@@ -1,25 +1,21 @@
 // Juego de Conejitos - JavaScript
-// Funcionalidad principal del juego
+let score = 0;
 
 document.addEventListener('DOMContentLoaded', function() {
     initializeGame();
 });
 
 function initializeGame() {
-    // Seleccionar todos los checkboxes de los conejitos
     const bunnyCheckboxes = document.querySelectorAll('.bunny input[type="checkbox"]');
     
-    // Agregar event listeners a cada conejito
-    bunnyCheckboxes.forEach((checkbox, index) => {
+    bunnyCheckboxes.forEach((checkbox) => {
         checkbox.addEventListener('change', handleBunnyClick);
         
-        // Agregar eventos de hover para mejor interactividad
         const bunnyElement = checkbox.closest('.bunny');
         bunnyElement.addEventListener('mouseenter', handleBunnyHover);
         bunnyElement.addEventListener('mouseleave', handleBunnyLeave);
     });
     
-    // Inicializar efectos adicionales
     initializeParticleSystem();
     startBackgroundAnimations();
 }
@@ -29,34 +25,42 @@ function handleBunnyClick(event) {
     const bunnyElement = checkbox.closest('.bunny');
     
     if (checkbox.checked) {
-        // Crear efecto de partículas
+        // 1. Sumar punto y actualizar marcador
+        incrementScore();
+        
+        // 2. Efectos visuales y sonoros
         createParticleEffect(bunnyElement);
-        
-        // Agregar efecto de sonido (opcional)
         playClickSound();
-        
-        // Efecto de vibración en dispositivos móviles
         vibrateDevice();
         
-        // Auto-resetear el checkbox después de la animación
+        // 3. Auto-resetear el checkbox para poder volver a golpear al conejo
         setTimeout(() => {
             checkbox.checked = false;
         }, 300);
+    }
+}
+
+function incrementScore() {
+    score++;
+    const scoreDisplay = document.getElementById('score');
+    if (scoreDisplay) {
+        scoreDisplay.textContent = score;
         
-        // Actualizar estadísticas del juego
-        updateGameStats();
+        // Pequeña animación en el número
+        scoreDisplay.classList.add('score-pop');
+        setTimeout(() => {
+            scoreDisplay.classList.remove('score-pop');
+        }, 150);
     }
 }
 
 function handleBunnyHover(event) {
-    const bunnyElement = event.target;
-    bunnyElement.style.transform = 'scale(1.05)';
+    const bunnyElement = event.currentTarget;
     bunnyElement.style.filter = 'brightness(1.1)';
 }
 
 function handleBunnyLeave(event) {
-    const bunnyElement = event.target;
-    bunnyElement.style.transform = '';
+    const bunnyElement = event.currentTarget;
     bunnyElement.style.filter = '';
 }
 
@@ -65,41 +69,31 @@ function createParticleEffect(bunnyElement) {
     const phoneElement = bunnyElement.closest('.phone');
     const phoneRect = phoneElement.getBoundingClientRect();
     
-    // Crear múltiples partículas
     const particleCount = 8;
-    const colors = ['#ff69b4', '#87ceeb', '#98e4ff', '#ffffff'];
+    const colors = ['#ff69b4', '#ffd700', '#98e4ff', '#ffffff'];
     
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         particle.className = 'particle';
         
-        // Configurar propiedades de la partícula
-        const size = Math.random() * 6 + 4; // 4-10px
+        const size = Math.random() * 6 + 4;
         const color = colors[Math.floor(Math.random() * colors.length)];
         const angle = (Math.PI * 2 * i) / particleCount;
-        const velocity = Math.random() * 30 + 20;
+        const velocity = Math.random() * 30 + 25;
         
         particle.style.width = `${size}px`;
         particle.style.height = `${size}px`;
         particle.style.background = color;
         particle.style.left = `${rect.left - phoneRect.left + rect.width / 2}px`;
-        particle.style.top = `${rect.top - phoneRect.top + rect.height / 2}px`;
+        particle.style.top = `${rect.top - phoneRect.top + 40}px`; // Cerca de la cabeza
         
-        // Agregar animación personalizada
-        particle.style.setProperty('--end-x', `${Math.cos(angle) * velocity}px`);
-        particle.style.setProperty('--end-y', `${Math.sin(angle) * velocity}px`);
-        particle.style.animation = `particle-burst-${i} 0.6s ease-out forwards`;
-        
-        // Crear keyframes dinámicos
         createParticleKeyframes(i, angle, velocity);
+        particle.style.animation = `particle-burst-${i} 0.6s ease-out forwards`;
         
         phoneElement.appendChild(particle);
         
-        // Remover partícula después de la animación
         setTimeout(() => {
-            if (particle.parentNode) {
-                particle.remove();
-            }
+            if (particle.parentNode) particle.remove();
         }, 600);
     }
 }
@@ -122,21 +116,16 @@ function createParticleKeyframes(index, angle, velocity) {
         }
     `;
     
-    // Agregar keyframes al DOM
     const styleElement = document.createElement('style');
     styleElement.textContent = keyframes;
     document.head.appendChild(styleElement);
     
-    // Limpiar después de usar
     setTimeout(() => {
-        if (styleElement.parentNode) {
-            styleElement.remove();
-        }
+        if (styleElement.parentNode) styleElement.remove();
     }, 1000);
 }
 
 function playClickSound() {
-    // Crear efecto de sonido usando Web Audio API
     try {
         const audioContext = new (window.AudioContext || window.webkitAudioContext)();
         const oscillator = audioContext.createOscillator();
@@ -159,22 +148,14 @@ function playClickSound() {
 }
 
 function vibrateDevice() {
-    // Vibración en dispositivos móviles compatibles
     if ('vibrate' in navigator) {
-        navigator.vibrate(50); // 50ms de vibración
+        navigator.vibrate(50);
     }
 }
 
-function updateGameStats() {
-    // Aquí podrías agregar lógica para guardar estadísticas
-    // Por ejemplo, en localStorage (si estuviera disponible)
-    console.log('Punto anotado!');
-}
-
 function initializeParticleSystem() {
-    // Sistema de partículas de fondo (opcional)
     setInterval(() => {
-        if (Math.random() < 0.1) { // 10% de probabilidad cada segundo
+        if (Math.random() < 0.2) {
             createBackgroundParticle();
         }
     }, 1000);
@@ -182,11 +163,12 @@ function initializeParticleSystem() {
 
 function createBackgroundParticle() {
     const phoneElement = document.querySelector('.phone');
+    if (!phoneElement) return;
+
     const particle = document.createElement('div');
-    
     particle.style.position = 'absolute';
-    particle.style.width = '3px';
-    particle.style.height = '3px';
+    particle.style.width = '4px';
+    particle.style.height = '4px';
     particle.style.background = 'rgba(255, 255, 255, 0.6)';
     particle.style.borderRadius = '50%';
     particle.style.left = `${Math.random() * 100}%`;
@@ -198,86 +180,53 @@ function createBackgroundParticle() {
     phoneElement.appendChild(particle);
     
     setTimeout(() => {
-        if (particle.parentNode) {
-            particle.remove();
-        }
+        if (particle.parentNode) particle.remove();
     }, 3000);
 }
 
 function startBackgroundAnimations() {
-    // Agregar variaciones aleatorias a las animaciones de los conejitos
     const bunnies = document.querySelectorAll('.bunny-animated');
     
-    bunnies.forEach((bunny, index) => {
-        // Variación aleatoria en la duración de la animación
-        const baseDuration = 2000; // 2 segundos
-        const variation = Math.random() * 500 - 250; // ±250ms
-        const newDuration = baseDuration + variation;
-        
-        bunny.style.animationDuration = `${newDuration}ms`;
-        
-        // Agregar pausa aleatoria ocasional
+    bunnies.forEach((bunny) => {
+        // Pausas aleatorias ocasionales para que sea más impredecible
         setInterval(() => {
-            if (Math.random() < 0.1) { // 10% de probabilidad
+            if (Math.random() < 0.15) {
                 bunny.style.animationPlayState = 'paused';
                 setTimeout(() => {
                     bunny.style.animationPlayState = 'running';
-                }, Math.random() * 1000 + 500); // 0.5-1.5 segundos de pausa
+                }, Math.random() * 800 + 400);
             }
-        }, 5000);
+        }, 4000);
     });
 }
 
-// Funciones de utilidad adicionales
 function resetGame() {
-    // Resetear el contador de puntos
-    const style = document.createElement('style');
-    style.textContent = 'body { counter-reset: score; }';
-    document.head.appendChild(style);
+    score = 0;
+    const scoreDisplay = document.getElementById('score');
+    if (scoreDisplay) scoreDisplay.textContent = score;
     
-    setTimeout(() => {
-        style.remove();
-    }, 100);
+    document.querySelectorAll('.bunny input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
+    });
 }
 
 function pauseGame() {
-    const bunnies = document.querySelectorAll('.bunny-animated');
-    bunnies.forEach(bunny => {
+    document.querySelectorAll('.bunny-animated').forEach(bunny => {
         bunny.style.animationPlayState = 'paused';
     });
 }
 
 function resumeGame() {
-    const bunnies = document.querySelectorAll('.bunny-animated');
-    bunnies.forEach(bunny => {
+    document.querySelectorAll('.bunny-animated').forEach(bunny => {
         bunny.style.animationPlayState = 'running';
     });
 }
 
-// Manejo de visibilidad de la página
 document.addEventListener('visibilitychange', function() {
-    if (document.hidden) {
-        pauseGame();
-    } else {
-        resumeGame();
-    }
+    if (document.hidden) pauseGame();
+    else resumeGame();
 });
 
-// Optimización de rendimiento
-function throttle(func, limit) {
-    let inThrottle;
-    return function() {
-        const args = arguments;
-        const context = this;
-        if (!inThrottle) {
-            func.apply(context, args);
-            inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
-        }
-    };
-}
-
-// Exportar funciones para uso externo (opcional)
 window.BunnyGame = {
     reset: resetGame,
     pause: pauseGame,
