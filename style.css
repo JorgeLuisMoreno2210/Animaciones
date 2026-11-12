@@ -1,12 +1,12 @@
     body {
-      margin: 0;
-      height: 100vh;
-      display: grid;
-      counter-reset: score;
-      place-items: center;
-      background: linear-gradient(135deg, #74b9ff, #0984e3);
-      font-family: 'Arial', sans-serif;
-    }
+    margin: 0;
+    height: 100vh;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #74b9ff, #0984e3);
+    font-family: 'Arial', sans-serif;
+    user-select: none; /* Evita seleccionar texto al hacer clics rápidos */
+}
 
     .game-container {
       display: flex;
@@ -35,17 +35,38 @@
     }
 
     .score-display {
-      font-size: 32px;
-      font-weight: bold;
-      color: #e17055;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-      min-width: 40px;
-      text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    color: #e17055;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+    min-width: 40px;
+    text-align: center;
+    transition: transform 0.15s ease;
+    }
+    .score-pop {
+    transform: scale(1.3);
+    color: #00b894;
     }
 
     .score-display::after {
       content: counter(score);
     }
+
+    .reset-btn {
+    background: #dfe6e9;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+  }
+
+  .reset-btn:hover {
+    background: #b2bec3;
+    transform: rotate(90deg);
+  }
 
     .tittle {
       margin-left: 48px;
@@ -76,7 +97,7 @@
       overflow: hidden;
     }
 
-    /* Checkboxes invisibles pero interactivos */
+    
     input[type=checkbox] {
       appearance: none;
       cursor: pointer;
@@ -117,7 +138,7 @@
       }
     }
 
-    /* Animaciones de conejos mejoradas */
+  
     @keyframes bunnyJump {
       0% { top: 0; transform: rotate(0deg); }
       25% { top: -20px; transform: rotate(-5deg); }
@@ -146,7 +167,7 @@
       100% { bottom: 0; }
     }
 
-    /* Layer 1 - Conejo blanco */
+   
     .layer-1 {
       position: absolute;
       z-index: 10;
@@ -162,7 +183,7 @@
       animation: bunnyJump 1s ease-in-out infinite;
     }
 
-    /* Layer 2 - Conejo gris */
+    
     .layer-2 {
       position: absolute;
       z-index: 11;
@@ -178,7 +199,6 @@
       animation: bunnyJump 1.2s ease-in-out infinite 0.3s;
     }
 
-    /* Layer 4 - Conejo marrón */
     .layer-4 {
       position: absolute;
       z-index: 12;
@@ -194,7 +214,7 @@
       animation: bunnyJump 0.8s ease-in-out infinite 0.7s;
     }
 
-    /* Layer 6 - Conejo blanco estático pero con parpadeo */
+   
     .layer-6 {
       position: absolute;
       z-index: 13;
@@ -210,7 +230,7 @@
       animation: bunnyJump 1.5s ease-in-out infinite 2s;
     }
 
-    /* Estilos de conejos */
+
     .left-ear-outer, .left-ear-outer2, .left-ear-outer4, .left-ear-outer6 {
       border-radius: 90%;
       width: 20px;
@@ -312,7 +332,7 @@
       right: 35%;
     }
 
-    /* Capas de fondo mejoradas */
+   
     .layer-3 {
       position: absolute;
       z-index: 1;
@@ -374,7 +394,6 @@
       width: 100%;
     }
 
-    /* Arbustos mejorados */
     .layer-8 {
       position: absolute;
       z-index: 4;
@@ -431,7 +450,7 @@
     .white-bush5 { right: 60px; bottom: 20px; }
     .white-bush6 { right: 0px; bottom: 0px; }
 
-    /* Efectos de interacción mejorados */
+
     input[type=checkbox]:checked + .left-ear-outer,
     input[type=checkbox]:checked ~ .head {
       animation: hitBounce 0.4s ease-out;
@@ -443,7 +462,7 @@
       100% { transform: scale(1) rotate(0deg); }
     }
 
-    /* Indicador visual de puntos */
+
     input[type=checkbox]:checked::after {
       content: "+1";
       position: absolute;
@@ -470,7 +489,6 @@
       }
     }
 
-    /* Responsive design */
     @media (max-width: 480px) {
       .phone {
         width: 280px;
